@@ -1,0 +1,6 @@
+spring.application.name: routex-demo
+
+yaxi:
+    # Replace keyId and key with the values of the key you created earlier.
+    keyId: 'REPLACE ME'
+    key: 'REPLACE ME'

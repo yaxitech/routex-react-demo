@@ -1,0 +1,38 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+header,
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+em {
+  font-style: italic;
+}
+
+p {
+  margin-top: var(--spectrum-global-dimension-size-150);
+  margin-bottom: var(--spectrum-global-dimension-size-150);
+}
+
+.error {
+  color: red;
+}
+
+/* XXX TODO this is not dark-mode compatible */
+.code {
+  background-color: white;
+  color: black;
+  padding: 0.25rem;
+}

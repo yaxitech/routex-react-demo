@@ -1,0 +1,47 @@
+name: 'CI'
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  check-backend:
+    name: Check backend
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Run tests
+        run: YAXI_KEY="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" ./mvnw test
+        working-directory: ./backend
+
+      - name: spotless check
+        run: ./mvnw spotless:check
+        working-directory: ./backend
+
+  build-frontend:
+    name: Build frontend
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+        with:
+          diagnostic-endpoint: ""
+
+      - run: nix build -L .#frontend
