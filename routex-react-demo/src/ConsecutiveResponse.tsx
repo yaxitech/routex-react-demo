@@ -8,6 +8,7 @@ import {
 import DialogForm from "./DialogForm";
 import RedirectElement from "./RedirectElement";
 import { Button, ButtonGroup, InlineAlert } from "@adobe/react-spectrum";
+import { describeCollectPaymentResult } from "./FirstResponse";
 
 export default function ConsecutiveResponse({
   service,
@@ -52,6 +53,8 @@ export default function ConsecutiveResponse({
           {service === "Transactions" &&
             "The transactions data was sent to the webhook."}
         </p>
+        {service === "CollectPayment" &&
+          describeCollectPaymentResult(response.jwt)}
         <p>
           A result also has a field <span className="code">connectionData</span>
           . It's a specific value for the bank account and connection that has

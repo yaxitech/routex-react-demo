@@ -8,6 +8,9 @@ import {
   Text,
   TextField,
   Well,
+  CheckboxGroup,
+  Checkbox,
+  Switch,
 } from "@adobe/react-spectrum";
 import { useState } from "react";
 import { issueTicket } from "../utils";
@@ -22,6 +25,7 @@ export type TicketData = {
   };
   creditorName: string;
   remittance: string;
+  fields?: string[];
 };
 
 function emptyTicketData(): TicketData {
@@ -38,6 +42,10 @@ function emptyTicketData(): TicketData {
   };
 }
 
+function defaultReturnFields(): string[] {
+  return ["debtorIban", "debtorName"];
+}
+
 function TicketForm({
   onDone,
 }: {
@@ -47,6 +55,7 @@ function TicketForm({
   let [ticket, setTicket] = useState("");
   let [ticketData, setTicketData] = useState<TicketData>(emptyTicketData);
   let [requestInFlight, setRequestInFlight] = useState(false);
+  let [returnDebtor, setReturnDebtor] = useState(false);
 
   return (
     <>
@@ -128,6 +137,34 @@ function TicketForm({
           }
           isRequired
         />
+        <Switch
+          isSelected={returnDebtor}
+          onChange={(value) => {
+            if (value && ticketData.fields === undefined) {
+              setTicketData({
+                ...ticketData,
+                fields: defaultReturnFields(),
+              });
+            }
+            setReturnDebtor(value);
+          }}
+        >
+          Include debtor identification in result
+        </Switch>
+        <CheckboxGroup
+          label="Fields to return"
+          isHidden={!returnDebtor}
+          value={ticketData.fields ?? defaultReturnFields()}
+          onChange={(value) =>
+            setTicketData({
+              ...ticketData,
+              fields: value,
+            })
+          }
+        >
+          <Checkbox value="debtorIban">Debtor IBAN</Checkbox>
+          <Checkbox value="debtorName">Debtor Name</Checkbox>
+        </CheckboxGroup>
         <ButtonGroup>
           <Button type="submit" variant="primary" isPending={requestInFlight}>
             Issue ticket
