@@ -1,0 +1,40 @@
+{
+  "bookingDate": "2025-07-17",
+  "valueDate": "2025-07-17",
+  "status": "Booked",
+  "endToEndId": "485197594144176",
+  "amount": {
+    "currency": "EUR",
+    "amount": "-9.38"
+  },
+  "creditor": {
+    "name": "Frankische.Bierbotschaf/Nurnberg",
+    "iban": "DE96120300009005290904"
+  },
+  "debtor": {
+    "name": "ISSUER",
+    "iban": "DE02120300000000202051"
+  },
+  "remittanceInformation": [
+    "VISA Debitkartenumsatz"
+  ],
+  "purposeCode": "IDCP",
+  "bankTransactionCodes": [
+    {
+      "iso": {
+        "domain": "PMNT",
+        "family": "ICDT",
+        "subFamily": "STDO"
+      }
+    },
+    {
+      "swift": "DDT"
+    },
+    {
+      "national": {
+        "code": "106",
+        "country": "DE"
+      }
+    }
+  ]
+}
