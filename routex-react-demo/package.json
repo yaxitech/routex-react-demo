@@ -15,7 +15,7 @@
     "jwt-decode": "^4.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "routex-client": "^0.4.2"
+    "routex-client": "^0.4.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
