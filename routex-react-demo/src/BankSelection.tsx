@@ -1,4 +1,11 @@
-import { InlineAlert, Item, Menu, SearchField } from "@adobe/react-spectrum";
+import {
+  Button,
+  ButtonGroup,
+  InlineAlert,
+  Item,
+  Menu,
+  SearchField,
+} from "@adobe/react-spectrum";
 import { useEffect, useState } from "react";
 import { ConnectionInfo, RoutexClient, SearchFilter } from "routex-client";
 import ResponseError, { ErrorAndTraceId } from "./ResponseError.js";
@@ -118,6 +125,23 @@ export default function BankSelection({
           Search didn't match any results
         </InlineAlert>
       )}
+      <div
+        style={{
+          marginTop: "1rem",
+          display: "flex",
+          width: "100%",
+          justifyContent: "end",
+        }}
+      >
+        <ButtonGroup orientation="vertical">
+          <Button
+            variant="secondary"
+            onPress={() => selected("connection-96386142-60e5-4ca9-abcf-944efce5bc1e")}
+          >
+            Or continue with demo connection
+          </Button>
+        </ButtonGroup>
+      </div>
     </>
   );
 }
