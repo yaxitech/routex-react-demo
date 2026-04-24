@@ -8,13 +8,17 @@ import {
 import DialogForm from "./DialogForm";
 import RedirectElement from "./RedirectElement";
 import { Button, ButtonGroup, InlineAlert } from "@adobe/react-spectrum";
-import { describeCollectPaymentResult } from "./FirstResponse";
+import {
+  describeCollectPaymentResult,
+  describeTransactionsResult,
+} from "./FirstResponse";
 
 export default function ConsecutiveResponse({
   service,
   client,
   ticket,
   response,
+  usedWebhook = false,
   onResponse,
   onStartAgain,
 }: {
@@ -22,6 +26,7 @@ export default function ConsecutiveResponse({
   client: RoutexClient;
   ticket: string;
   response: OBResponse;
+  usedWebhook?: boolean;
   onResponse: (response: OBResponse) => void;
   onStartAgain: () => void;
 }) {
@@ -51,10 +56,14 @@ export default function ConsecutiveResponse({
           Success! The response was now a <span className="code">Result</span>,
           which means the process is now complete.{" "}
           {service === "Transactions" &&
+            usedWebhook &&
             "The transactions data was sent to the webhook."}
         </p>
         {service === "CollectPayment" &&
           describeCollectPaymentResult(response.jwt)}
+        {service === "Transactions" &&
+          !usedWebhook &&
+          describeTransactionsResult(response.jwt)}
         <p>
           A result also has a field <span className="code">connectionData</span>
           . It's a specific value for the bank account and connection that has

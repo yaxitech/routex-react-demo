@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { issueTicket } from "../utils";
 
-type TicketData = {
+export type TicketData = {
   account: {
     iban: string;
     currency: "EUR";

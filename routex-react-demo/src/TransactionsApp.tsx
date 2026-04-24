@@ -6,22 +6,38 @@ import CredentialsForm from "./CredentialsForm";
 import FirstResponse from "./FirstResponse";
 import ConsecutiveResponse from "./ConsecutiveResponse";
 import ReturnedFromRedirect from "./ReturnedFromRedirect";
-import TicketForm from "./transactions/TicketForm";
+import TicketForm, { TicketData } from "./transactions/TicketForm";
 
 const client = new RoutexClient(new URL(import.meta.env.VITE_ROUTEX_URL));
 
 type State =
   | { state: "Initial" }
-  | { state: "TicketIssued"; ticket: string }
-  | { state: "ConnectionSelected"; ticket: string; connectionId: string }
-  | { state: "TransactionsRequested"; ticket: string; response: OBResponse }
+  | { state: "TicketIssued"; ticket: string; ticketData: TicketData }
+  | {
+      state: "ConnectionSelected";
+      ticket: string;
+      ticketData: TicketData;
+      connectionId: string;
+    }
+  | {
+      state: "TransactionsRequested";
+      ticket: string;
+      ticketData: TicketData;
+      response: OBResponse;
+    }
   | {
       state: "ResponseReceived";
       ticket: string;
+      ticketData?: TicketData;
       response: OBResponse;
       responseCount: number;
     }
-  | { state: "ReturnedFromRedirect"; ticket: string; context: Uint8Array };
+  | {
+      state: "ReturnedFromRedirect";
+      ticket: string;
+      ticketData?: TicketData;
+      context: Uint8Array;
+    };
 
 function TransactionsApp({
   redirectReturnState,
@@ -49,7 +65,9 @@ function TransactionsApp({
         </a>
         {state.state === "Initial" && (
           <TicketForm
-            onDone={(ticket) => setState({ state: "TicketIssued", ticket })}
+            onDone={(ticket, ticketData) =>
+              setState({ state: "TicketIssued", ticket, ticketData })
+            }
           />
         )}
         {state.state == "TicketIssued" && (
@@ -69,6 +87,7 @@ function TransactionsApp({
                 setState({
                   state: "ConnectionSelected",
                   ticket: state.ticket,
+                  ticketData: state.ticketData,
                   connectionId,
                 })
               }
@@ -85,12 +104,17 @@ function TransactionsApp({
               client.transactions({ credentials, ticket: state.ticket })
             }
             onCancel={() =>
-              setState({ state: "TicketIssued", ticket: state.ticket })
+              setState({
+                state: "TicketIssued",
+                ticket: state.ticket,
+                ticketData: state.ticketData,
+              })
             }
             onResponse={(response) =>
               setState({
                 state: "TransactionsRequested",
                 ticket: state.ticket,
+                ticketData: state.ticketData,
                 response,
               })
             }
@@ -102,10 +126,12 @@ function TransactionsApp({
             client={client}
             ticket={state.ticket}
             response={state.response}
+            usedWebhook={state.ticketData.webhook !== undefined}
             onResponse={(response) =>
               setState({
                 state: "ResponseReceived",
                 ticket: state.ticket,
+                ticketData: state.ticketData,
                 response: response,
                 responseCount: 1,
               })
@@ -119,10 +145,12 @@ function TransactionsApp({
             client={client}
             ticket={state.ticket}
             response={state.response}
+            usedWebhook={state.ticketData?.webhook !== undefined}
             onResponse={(response) =>
               setState({
                 state: "ResponseReceived",
                 ticket: state.ticket,
+                ticketData: state.ticketData,
                 response: response,
                 responseCount: state.responseCount + 1,
               })
@@ -140,6 +168,7 @@ function TransactionsApp({
               setState({
                 state: "ResponseReceived",
                 ticket: state.ticket,
+                ticketData: state.ticketData,
                 response,
                 responseCount: 1,
               })

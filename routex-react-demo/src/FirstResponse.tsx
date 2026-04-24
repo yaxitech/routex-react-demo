@@ -19,6 +19,7 @@ function handleResponse(
   client: RoutexClient,
   ticket: string,
   response: OBResponse,
+  usedWebhook: boolean,
   onResponse: (response: OBResponse) => void,
 ): {
   type: string;
@@ -35,10 +36,14 @@ function handleResponse(
             A <span className="code">Result</span> is returned when the process
             is complete.{" "}
             {service === "Transactions" &&
-              "The data was sent to the webhook if an URL was provided in the ticket."}
+              usedWebhook &&
+              "The transactions data was sent to the webhook."}
           </p>
           {service === "CollectPayment" &&
             describeCollectPaymentResult(response.jwt)}
+          {service === "Transactions" &&
+            !usedWebhook &&
+            describeTransactionsResult(response.jwt)}
         </>
       ),
     };
@@ -140,6 +145,40 @@ export function describeCollectPaymentResult(
   }
 }
 
+export function describeTransactionsResult(
+  jwt: string,
+): ReactElement | undefined {
+  // Note that this decodes the result in the frontend code solely for the purpose of displaying it in this demo.
+  // Since the frontend cannot verify the signature without the secret key, the decoded result is unauthenticated and should not be trusted.
+  // Your backend must verify the JWT signature before making any decisions based on the signed result data.
+  // See, for example, `TicketService#verifyResults` in this demo’s backend code or https://docs.yaxi.tech/verify.html
+  const data = jwtDecode<{
+    data: { data: [any] };
+  }>(jwt).data.data;
+
+  if (data !== undefined) {
+    const preview = data.length > 3 ? [...data.slice(0, 3), "..."] : data;
+
+    return (
+      <>
+        <p>The Transactions service returned a JWT with the following data:</p>
+        <Well>
+          <pre>{JSON.stringify(preview, null, "  ")}</pre>
+        </Well>
+        <p>
+          See{" "}
+          <a href="https://docs.yaxi.tech/transactions.html#_result">
+            Transactions Result
+          </a>{" "}
+          for details.
+        </p>
+      </>
+    );
+  } else {
+    return undefined;
+  }
+}
+
 function describeInputType(input: Confirmation | Selection | Field): string {
   if (input instanceof Confirmation) {
     return "Confirmation";
@@ -176,15 +215,24 @@ export default function FirstResponse({
   client,
   ticket,
   response,
+  usedWebhook = false,
   onResponse,
 }: {
   service: "CollectPayment" | "Transactions";
   client: RoutexClient;
   ticket: string;
   response: OBResponse;
+  usedWebhook?: boolean;
   onResponse: (response: OBResponse) => void;
 }) {
-  const result = handleResponse(service, client, ticket, response, onResponse);
+  const result = handleResponse(
+    service,
+    client,
+    ticket,
+    response,
+    usedWebhook,
+    onResponse,
+  );
 
   return (
     <Flex direction="column">
