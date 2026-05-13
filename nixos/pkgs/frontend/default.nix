@@ -17,7 +17,7 @@ buildNpmPackage {
   version = packageJson.version;
 
   src = ../../../routex-react-demo;
-  npmDepsHash = "sha256-7TD2jVYeeVoJhIKqeuss3OiyTRwIuysa0C+upqjigLU=";
+  npmDepsHash = "sha256-M3NgdOHYuaitB2iFvTV+TBS36Xo7irE/HNy/5xBXtEg=";
 
   # https://vite.dev/guide/env-and-mode#modes
   npmBuildFlags = [

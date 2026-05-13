@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonGroup,
+  DatePicker,
   Form,
   InlineAlert,
   Heading,
@@ -9,6 +10,7 @@ import {
   TextField,
   Well,
 } from "@adobe/react-spectrum";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import { useState } from "react";
 import { issueTicket } from "../utils";
 
@@ -26,13 +28,17 @@ export type TicketData = {
 };
 
 function emptyTicketData(): TicketData {
+  const defaultFrom = today(getLocalTimeZone())
+    .subtract({ days: 180 })
+    .toString();
+
   return {
     account: {
       iban: "",
       currency: "EUR",
     },
     range: {
-      from: "",
+      from: defaultFrom,
       to: undefined,
     },
   };
@@ -89,36 +95,42 @@ function TicketForm({
           }
           isRequired
         />
-        <TextField
+        <DatePicker
           label="From"
-          value={ticketData.range.from}
-          onChange={(value) =>
+          value={parseDate(ticketData.range.from)}
+          onChange={(value) => {
+            if (value === null) {
+              return;
+            }
+
             setTicketData({
               ...ticketData,
               range: {
                 ...ticketData.range,
-                from: value,
+                from: value.toString(),
               },
-            })
-          }
-          pattern="\d{4}-\d{2}-\d{2}"
-          placeholder="YYYY-MM-DD"
+            });
+          }}
+          shouldForceLeadingZeros
           isRequired
         />
-        <TextField
+        <DatePicker
           label="To"
-          value={ticketData.range.to}
+          value={
+            ticketData.range.to === undefined
+              ? null
+              : parseDate(ticketData.range.to)
+          }
           onChange={(value) =>
             setTicketData({
               ...ticketData,
               range: {
                 ...ticketData.range,
-                to: value.length > 0 ? value : undefined,
+                to: value === null ? undefined : value.toString(),
               },
             })
           }
-          pattern="\d{4}-\d{2}-\d{2}"
-          placeholder="YYYY-MM-DD"
+          shouldForceLeadingZeros
         />
         <TextField
           label="Webhook URL"
