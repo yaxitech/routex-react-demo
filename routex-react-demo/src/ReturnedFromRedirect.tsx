@@ -42,7 +42,14 @@ export default function ReturnedFromRedirect({
         </span>{" "}
         to retrieve the next <span className="code">Response</span>.
       </p>
-      {error && <ResponseError client={client} ticket={ticket} error={error} />}
+      {error && (
+        <ResponseError
+          service={service}
+          client={client}
+          ticket={ticket}
+          error={error}
+        />
+      )}
       <ButtonGroup>
         <Button variant="primary" onPress={confirm}>
           Continue

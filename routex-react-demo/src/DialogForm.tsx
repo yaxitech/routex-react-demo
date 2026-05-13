@@ -211,7 +211,12 @@ export default function DialogForm({
       </>
       <>
         {error && (
-          <ResponseError client={client} ticket={ticket} error={error} />
+          <ResponseError
+            service={service}
+            client={client}
+            ticket={ticket}
+            error={error}
+          />
         )}
       </>
       <>

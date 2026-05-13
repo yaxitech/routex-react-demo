@@ -14,10 +14,12 @@ const SEARCH_LIMIT = 50;
 const MIN_SEARCH_INPUT_LENGTH = 3;
 
 export default function BankSelection({
+  service,
   client,
   ticket,
   selected,
 }: {
+  service: "CollectPayment" | "Transactions";
   client: RoutexClient;
   ticket: string;
   selected: (connectionId: string) => void;
@@ -109,7 +111,12 @@ export default function BankSelection({
         }
       />
       {error !== null && (
-        <ResponseError client={client} ticket={ticket} error={error} />
+        <ResponseError
+          service={service}
+          client={client}
+          ticket={ticket}
+          error={error}
+        />
       )}
       {searchResults !== null && searchResults.length > 0 && (
         <Menu

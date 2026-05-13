@@ -81,6 +81,7 @@ function TransactionsApp({
               <span className="code">search()</span> method.
             </p>
             <BankSelection
+              service="Transactions"
               client={client}
               ticket={state.ticket}
               selected={(connectionId) =>

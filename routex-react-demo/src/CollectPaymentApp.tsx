@@ -63,6 +63,7 @@ function CollectPaymentApp({
               <span className="code">search()</span> method.
             </p>
             <BankSelection
+              service="CollectPayment"
               client={client}
               ticket={state.ticket}
               selected={(id) =>

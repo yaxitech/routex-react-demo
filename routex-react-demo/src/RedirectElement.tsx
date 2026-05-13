@@ -48,7 +48,14 @@ export default function RedirectElement({
 
   return (
     <>
-      {error && <ResponseError client={client} ticket={ticket} error={error} />}
+      {error && (
+        <ResponseError
+          service={service}
+          client={client}
+          ticket={ticket}
+          error={error}
+        />
+      )}
       <ButtonGroup>
         <Button
           variant="primary"

@@ -8,7 +8,11 @@ import {
   ButtonGroup,
   Text,
 } from "@adobe/react-spectrum";
-import { ResponseException, RoutexClient } from "routex-client";
+import {
+  NotFoundException,
+  ResponseException,
+  RoutexClient,
+} from "routex-client";
 import { useEffect, useState } from "react";
 
 export interface ErrorAndTraceId {
@@ -17,10 +21,12 @@ export interface ErrorAndTraceId {
 }
 
 export default function ResponseError({
+  service,
   client,
   ticket,
   error,
 }: {
+  service: "CollectPayment" | "Transactions";
   client: RoutexClient;
   ticket: string;
   error: Error | ErrorAndTraceId;
@@ -66,6 +72,16 @@ export default function ResponseError({
       <Heading>{errorObj.toString()}</Heading>
       <Content>
         <Flex direction="column">
+          {service === "Transactions" &&
+            errorObj instanceof NotFoundException && (
+              <Text>
+                The service could not fetch transactions for the account from this
+                ticket because the selected bank connection reported that
+                account as missing. Check that the ticket's IBAN match an
+                account available for the credentials you entered, or select the
+                bank connection that exposes that account.
+              </Text>
+            )}
           {errorObj instanceof ResponseException && (
             <Text>
               HTTP {errorObj.response.status}
@@ -75,8 +91,8 @@ export default function ResponseError({
               {errorBody ? `: ${errorBody}` : ""}
             </Text>
           )}
-          {"errorMessage" in errorObj && (
-            <Text>{errorObj.errorMessage as string}</Text>
+          {"userMessage" in errorObj && (
+            <Text>{errorObj.userMessage as string}</Text>
           )}
           {traceId !== undefined && (
             <>
